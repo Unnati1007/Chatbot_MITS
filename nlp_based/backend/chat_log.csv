@@ -1,0 +1,39 @@
+user_query,answer,confidence
+hi,"Sure! Hello! How can I help you with Moodle, IMS, or registration?",1.0
+i forgot my moodle password,Sure! It seems you forgot your password. Please visit the Moodle password reset page to recover it.,1.0
+i haven't received my registration email,"Sure! If you are having registration issues, please check your email for confirmation or contact support at registration@example.com.",1.0
+where can i find my course material,I can help with that. I’m not sure about this. Maybe try asking in a different way?,0.0
+hi,"Don’t worry, here’s what you can do: Hello! How can I help you with Moodle, IMS, or registration?",1.0
+hello,"Sure! Hello! How can I help you with Moodle, IMS, or registration?",1.0
+i m unnati jadon,"I can help with that. I’m not sure, please ask in another way.",0.31487536430358887
+i forgot my moodle password,I can help with that. It seems you forgot your password. Please visit the Moodle password reset page to recover it.,1.0
+give me the link,"I can help with that. I’m not sure, please ask in another way.",0.39186495542526245
+i want the link,"I can help with that. I’m not sure, please ask in another way.",0.3838231563568115
+i can't login to moodle,"Don’t worry, here’s what you can do: If you completed the college registration form during admission, the university will send your Moodle ID and password to your email.",0.8168395161628723
+how do i register to ims,Sure! IMS registration is currently not open. Keep checking the university website for updates.,0.8697328567504883
+but i still cannot login,I can help with that. IMS registration is currently not open. Keep checking the university website for updates.,1.0
+it didn't work,"I can help with that. I’m not sure, please ask in another way.",0.2295721471309662
+same issue,"Don’t worry, here’s what you can do: IMS registration is currently not open. Keep checking the university website for updates.",1.0
+still not working,Sure! IMS registration is currently not open. Keep checking the university website for updates.,1.0
+i m getting the same error,"I can help with that. I’m not sure, please ask in another way.",0.35976338386535645
+hi,"Don’t worry, here’s what you can do: Hello! How can I help you with Moodle, IMS, or registration?",1.0
+how are u,"Don’t worry, here’s what you can do: I’m not sure, please ask in another way.",0.2069026678800583
+i cannot login,Sure! I’m not sure about this. Maybe try asking in a different way?,0.0
+i am facing issue in logging in moddle,"Sure! I’m not sure, please ask in another way.",0.27698519825935364
+i forgot my moodle password,Sure! It seems you forgot your password. Please visit the Moodle password reset page to recover it.,1.0
+"i am not filled college registration form""","Sure! If you are having registration issues, please check your email for confirmation or contact support at registration@example.com.",1.0
+I am not getting any email for IMS registrations,"Don’t worry, here’s what you can do: If you are having registration issues, please check your email for confirmation or contact support at registration@example.com.",1.0
+what is the Moodle website address,I can help with that. MITS has two Moodle servers: http://moodle.mitsgwalior.in and https://moodle.mitseb.in.,1.0000001192092896
+"I can log in to Moodle, but my courses are not visible.","Sure! Contact your course faculty to enroll you in their courses, or reach out to your class coordinator.",0.832146167755127
+again,"Don’t worry, here’s what you can do: Sure, take your time. Let me know if you need anything.",1.0
+hi,"Sure! Hello! How can I help you with Moodle, IMS, or registration?",1.0
+i m getting issue logging in,Sure! I’m not sure about this. Maybe try asking in a different way?,0.0
+I don't khow my email id or i am not geting any email for email id,"Sure! If you completed the college registration form during admission, the university will send your Moodle ID and password to your email.",0.6053588390350342
+"How can I change my date of birth, email, phone number, or make a profile correction?",I can help with that. Contact the student section or email goffice@mitsgwalior.in with proof. You may also call 07512409325.,0.8276211023330688
+again,"I can help with that. Sure, take your time. Let me know if you need anything.",1.0
+thanks,I can help with that. Glad to help!,1.0
+hello,"Sure! Hello! How can I help you with Moodle, IMS, or registration?",1.0
+how to get the moodle id and password,"Sure! If you completed the college registration form during admission, the university will send your Moodle ID and password to your email.",1.0
+i have forgot my password,"Don’t worry, here’s what you can do: It seems you forgot your password. Please visit the Moodle password reset page to recover it.",1.0
+what is moodle,"Don’t worry, here’s what you can do: Contact your class coordinator to retrieve your Moodle ID, or check your university email.",0.8287888765335083
+who are you,"Sure! I’m not sure, please ask in another way.",0.13904567062854767
