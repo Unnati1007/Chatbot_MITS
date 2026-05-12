@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot, User, RefreshCw, MessageSquare } from 'lucide-react';
+import { Send, Bot, User, RefreshCw, MessageSquare, Globe, BookOpen, GraduationCap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const API_URL = 'http://127.0.0.1:5000/chat';
 
@@ -8,10 +10,11 @@ function App() {
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: "Hello! 👋 I'm your MITS AI Assistant. Ask me anything about Moodle, IMS, or Registration.",
+      text: "Hello! 👋 I'm your **MITS AI Assistant**. Ask me anything about Moodle, IMS, or Registration.",
       sender: 'bot',
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      type: 'rule'
+      type: 'rule',
+      suggestions: ["How to get Moodle ID?", "Forgot Password", "IMS Registration"]
     }
   ]);
   const [input, setInput] = useState('');
@@ -64,7 +67,7 @@ function App() {
       console.error("Chat Error:", error);
       setMessages(prev => [...prev, {
         id: Date.now() + 1,
-        text: "Connection failed. Please ensure the backend is running.",
+        text: "**Connection failed.** Please ensure the backend is running and Ollama is active.",
         sender: 'bot',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         type: 'error'
@@ -89,94 +92,150 @@ function App() {
   };
 
   return (
-    <div className="app-container">
-      <header className="app-header">
-        <div className="bot-avatar">
-          <Bot size={24} />
+    <div className="app-wrapper">
+      {/* Sidebar Navigation */}
+      <aside className="sidebar">
+        <div className="logo-section">
+          <div className="bot-avatar" style={{ width: '32px', height: '32px' }}>
+            <Bot size={18} />
+          </div>
+          <h2>MITS AI</h2>
         </div>
-        <div className="header-info">
-          <h1>MITS Assistant</h1>
-          <p><span className="status-dot"></span> Online • AI Powered</p>
-        </div>
-        <button 
-          onClick={handleReset}
-          style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
-          title="Reset Chat"
-        >
-          <RefreshCw size={20} />
-        </button>
-      </header>
 
-      <main className="messages-area">
-        <AnimatePresence initial={false}>
-          {messages.map((msg) => (
-            <motion.div 
-              key={msg.id}
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              className={`message-row ${msg.sender}`}
-            >
-              <div className="message-bubble">
-                <div className="message-content">{msg.text}</div>
-                <span className="message-time">{msg.time}</span>
-                
-                {msg.suggestions && msg.suggestions.length > 0 && (
-                  <div className="suggestions-container">
-                    {msg.suggestions.map((s, i) => (
-                      <button 
-                        key={i} 
-                        className="suggestion-chip"
-                        onClick={() => handleSend(s)}
-                      >
-                        {s}
-                      </button>
-                    ))}
+        <nav className="nav-section">
+          <span className="nav-title">Navigation</span>
+          <a href="#" className="nav-item active">
+            <MessageSquare size={18} /> Chat
+          </a>
+          <a href="http://moodle.mitsgwalior.in/" target="_blank" className="nav-item">
+            <BookOpen size={18} /> Moodle (Old)
+          </a>
+          <a href="https://moodle.mitseb.in/" target="_blank" className="nav-item">
+            <BookOpen size={18} /> Moodle (2024+)
+          </a>
+          <a href="https://mitsims.in/" target="_blank" className="nav-item">
+            <MessageSquare size={18} /> IMS Portal
+          </a>
+          <a href="https://mitsgwalior.in/" target="_blank" className="nav-item">
+            <Globe size={18} /> MITS Website
+          </a>
+        </nav>
+
+        <nav className="nav-section">
+          <span className="nav-title">Resources</span>
+          <a href="#" className="nav-item">
+            <GraduationCap size={18} /> Registration Guide
+          </a>
+          <a href="#" className="nav-item">
+            <BookOpen size={18} /> Documentation
+          </a>
+        </nav>
+
+        <div className="status-card">
+          <div className="status-item">
+            <div className="dot"></div>
+            <span>System Online</span>
+          </div>
+          <div className="status-item" style={{ marginTop: '8px', opacity: 0.7 }}>
+            <Bot size={14} />
+            <span>Ollama (Llama 3) Active</span>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Chat Container */}
+      <div className="app-container">
+        <header className="app-header">
+          <div className="bot-avatar">
+            <Bot size={22} />
+          </div>
+          <div className="header-info">
+            <h1>MITS Assistant</h1>
+            <p>Powered by local LLM • Knowledge Base 2.0</p>
+          </div>
+          <button 
+            onClick={handleReset}
+            style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+            title="Reset Chat"
+          >
+            <RefreshCw size={18} />
+          </button>
+        </header>
+
+        <main className="messages-area">
+          <AnimatePresence initial={false}>
+            {messages.map((msg) => (
+              <motion.div 
+                key={msg.id}
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                className={`message-row ${msg.sender}`}
+              >
+                <div className="message-bubble">
+                  <div className="markdown-content">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {msg.text}
+                    </ReactMarkdown>
                   </div>
-                )}
+                  <span className="message-time">{msg.time}</span>
+                  
+                  {msg.suggestions && msg.suggestions.length > 0 && (
+                    <div className="suggestions-container">
+                      {msg.suggestions.map((s, i) => (
+                        <button 
+                          key={i} 
+                          className="suggestion-chip"
+                          onClick={() => handleSend(s)}
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+          
+          {isLoading && (
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }}
+              className="message-row bot"
+            >
+              <div className="message-bubble" style={{ padding: '16px 24px' }}>
+                <div className="typing">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
               </div>
             </motion.div>
-          ))}
-        </AnimatePresence>
-        
-        {isLoading && (
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }}
-            className="message-row bot"
-          >
-            <div className="message-bubble" style={{ padding: '12px 20px' }}>
-              <div className="typing">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-            </div>
-          </motion.div>
-        )}
-        <div ref={messagesEndRef} />
-      </main>
+          )}
+          <div ref={messagesEndRef} />
+        </main>
 
-      <footer className="input-area">
-        <form 
-          className="input-container" 
-          onSubmit={(e) => { e.preventDefault(); handleSend(); }}
-        >
-          <MessageSquare size={20} color="var(--text-muted)" />
-          <input 
-            type="text" 
-            placeholder="Type your message here..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <button 
-            type="submit" 
-            className="send-btn"
-            disabled={!input.trim() || isLoading}
+        <footer className="input-area">
+          <form 
+            className="input-container" 
+            onSubmit={(e) => { e.preventDefault(); handleSend(); }}
           >
-            <Send size={18} />
-          </button>
-        </form>
-      </footer>
+            <input 
+              type="text" 
+              placeholder="Ask anything about MITS..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
+            <button 
+              type="submit" 
+              className="send-btn"
+              disabled={!input.trim() || isLoading}
+            >
+              <Send size={18} />
+            </button>
+          </form>
+        </footer>
+      </div>
     </div>
   );
 }

@@ -41,14 +41,14 @@ for item in faq_data:
         answers.append(answer)
         intents.append(intent)
 
-print(f"📌 Total questions to embed: {len(questions)}")
+print(f"Total questions to embed: {len(questions)}")
 
 # ---------- LOAD MiniLM MODEL ----------
-print("🔄 Loading MiniLM model...")
+print("Loading MiniLM model...")
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
 # ---------- CREATE EMBEDDINGS ----------
-print("⚙️ Creating embeddings...")
+print("Creating embeddings...")
 embeddings = model.encode(
     questions,
     convert_to_numpy=True,
@@ -68,5 +68,5 @@ with open(INTENTS_PATH, "wb") as f:
 with open(QUESTIONS_PATH, "wb") as f:
     pickle.dump(questions, f)
 
-print("✅ Embeddings saved successfully")
-print(f"📁 Files saved in: {MODEL_DIR}")
+print("Embeddings saved successfully")
+print(f"Files saved in: {MODEL_DIR}")

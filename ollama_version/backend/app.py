@@ -55,13 +55,16 @@ MODEL_NAME = "llama3"
 def call_ollama(user_query, context):
     """Call local Ollama server for conversational response"""
     system_prompt = (
-        "You are the MITS AI Assistant, a helpful and professional university companion. "
-        "Use the provided context to answer the user's question accurately. "
-        "If the context is irrelevant, answer based on your general knowledge but mention you are an AI. "
-        "Keep the tone friendly, concise, and professional."
+        "You are the 'MITS AI Assistant', a premium university companion for Madhav Institute of Technology & Science. "
+        "INSTRUCTIONS:\n"
+        "1. Use the provided Context to answer the user's question accurately.\n"
+        "2. Format your response using Markdown (bolding, lists, etc.) to make it highly readable.\n"
+        "3. **CRITICAL:** Only provide URLs that are explicitly mentioned in the provided Context. DO NOT invent or assume any website addresses.\n"
+        "4. If the context is about a technical issue (Moodle, IMS), provide step-by-step instructions.\n"
+        "5. If the context is irrelevant, answer based on general knowledge but maintain a professional university tone."
     )
     
-    full_prompt = f"System: {system_prompt}\nContext: {context}\nUser: {user_query}\nAssistant:"
+    full_prompt = f"System: {system_prompt}\n\nContext: {context}\n\nUser: {user_query}\n\nAssistant:"
     
     try:
         response = requests.post(
@@ -69,16 +72,20 @@ def call_ollama(user_query, context):
             json={
                 "model": MODEL_NAME,
                 "prompt": full_prompt,
-                "stream": False
+                "stream": False,
+                "options": {
+                    "temperature": 0.3, # Keep it focused
+                    "top_p": 0.9
+                }
             },
-            timeout=10
+            timeout=15
         )
         if response.status_code == 200:
             return response.json().get("response", "").strip()
         else:
             return None
     except Exception as e:
-        print(f"Ollama Error: {e}")
+        print(f"Ollama Connection Error: {e}")
         return None
 
 
@@ -123,17 +130,19 @@ def chat():
     if ollama_reply:
         response["reply"] = ollama_reply
         response["type"] = "ollama"
+    elif result.get("answer"):
+        # FALLBACK: If Ollama fails, use the direct database answer
+        response["reply"] = result["answer"]
+        response["type"] = result["type"]
     else:
-        # Fallback to hardcoded logic if Ollama is unavailable
+        # ABSOLUTE FALLBACK: No match and no Ollama
         if result["type"] == "clarify":
-            response["reply"] = "Did you mean one of these?"
+            response["reply"] = "I'm not quite sure, did you mean one of these?"
             response["suggestions"] = result.get("suggestions", [])
-        elif result.get("answer"):
-            response["reply"] = result["answer"]
         else:
             response["reply"] = (
-                "Sorry, I couldn't find a specific answer for that. "
-                "Please try asking about Moodle, IMS, or registration."
+                "I'm sorry, I couldn't find a specific answer in my knowledge base. "
+                "Please try rephrasing your question or check the MITS website."
             )
 
     # ---------- UPDATE MEMORY ----------

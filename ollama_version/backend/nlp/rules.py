@@ -29,6 +29,15 @@ CONFIRMATIONS = {
     "again"
 }
 
+FAREWELLS = {
+    "bye",
+    "goodbye",
+    "see you",
+    "take care",
+    "exit",
+    "quit"
+}
+
 PASSWORD_KEYWORDS = {
     "forgot password",
     "lost password",
@@ -85,6 +94,15 @@ def check_rules(user_query: str) -> dict | None:
             "type": "rule",
             "intent": "confirmation",
             "answer": "Okay 👍 Tell me what you need help with.",
+            "confidence": 1.0
+        }
+
+    # ---------- FAREWELLS ----------
+    if any(f in text for f in FAREWELLS):
+        return {
+            "type": "rule",
+            "intent": "farewell",
+            "answer": "Goodbye! 😊 Feel free to ask if you have more questions about Moodle or IMS later. Have a great day!",
             "confidence": 1.0
         }
 

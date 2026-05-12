@@ -46,8 +46,8 @@ MODEL = SentenceTransformer("all-MiniLM-L6-v2")
 # =====================================================
 # CONFIDENCE THRESHOLDS
 # =====================================================
-HIGH_CONFIDENCE = 0.70
-LOW_CONFIDENCE = 0.55
+HIGH_CONFIDENCE = 0.65
+LOW_CONFIDENCE = 0.40
 
 
 # =====================================================
