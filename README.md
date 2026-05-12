@@ -1,1 +1,0 @@
-# Chitchat for MITS-DU
