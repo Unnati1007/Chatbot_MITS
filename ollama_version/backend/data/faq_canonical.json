@@ -1,0 +1,244 @@
+[
+  {
+    "intent": "intent_1",
+    "questions": [
+      "can you help with how to get the moodle id and password",
+      "how to get the moodle id and password",
+      "how to how to get the moodle id and password",
+      "i am facing how to get the moodle id and password",
+      "i have an issue with how to get the moodle id and password",
+      "need help regarding how to get the moodle id and password",
+      "problem related to how to get the moodle id and password"
+    ],
+    "answer": "If you have filled the college registration form at the time of admisstion then you will get the email from university"
+  },
+  {
+    "intent": "intent_2",
+    "questions": [
+      "can you help with i am not filled college registration form",
+      "how to i am not filled college registration form",
+      "i am facing i am not filled college registration form",
+      "i am not filled college registration form",
+      "i have an issue with i am not filled college registration form",
+      "need help regarding i am not filled college registration form",
+      "problem related to i am not filled college registration form"
+    ],
+    "answer": "her is the link to fill university registration form https://admissions.mitsweb.in."
+  },
+  {
+    "intent": "intent_3",
+    "questions": [
+      "can you help with i am forgot or lost my moodle id",
+      "how to i am forgot or lost my moodle id",
+      "i am facing i am forgot or lost my moodle id",
+      "i am forgot or lost my moodle id",
+      "i have an issue with i am forgot or lost my moodle id",
+      "need help regarding i am forgot or lost my moodle id",
+      "problem related to i am forgot or lost my moodle id"
+    ],
+    "answer": "contact to your class cordinator for moodle id or check from this link"
+  },
+  {
+    "intent": "intent_4",
+    "questions": [
+      "can you help with i am forgot or lost my moodle password",
+      "how to i am forgot or lost my moodle password",
+      "i am facing i am forgot or lost my moodle password",
+      "i am forgot or lost my moodle password",
+      "i have an issue with i am forgot or lost my moodle password",
+      "need help regarding i am forgot or lost my moodle password",
+      "problem related to i am forgot or lost my moodle password"
+    ],
+    "answer": "Lost my password or forget password option are avilable on both the moodle steps for retrive password click on forget/lost password then put your university emai id in the last feald then chek your university emai id for the new password link"
+  },
+  {
+    "intent": "intent_5",
+    "questions": [
+      "can you help with i am able to login in moodle but courses are not visible",
+      "how to i am able to login in moodle but courses are not visible",
+      "i am able to login in moodle but courses are not visible",
+      "i am facing i am able to login in moodle but courses are not visible",
+      "i have an issue with i am able to login in moodle but courses are not visible",
+      "need help regarding i am able to login in moodle but courses are not visible",
+      "problem related to i am able to login in moodle but courses are not visible"
+    ],
+    "answer": "Contact your course faculty he/she will enroll you in there courses or contact your class coordinator"
+  },
+  {
+    "intent": "intent_6",
+    "questions": [
+      "can you help with query regarding change of date of birth emaill phone or profile correction",
+      "can you help with query regarding change of emaill phone or profile correction",
+      "how to query regarding change of date of birth emaill phone or profile correction",
+      "how to query regarding change of emaill phone or profile correction",
+      "i am facing query regarding change of date of birth emaill phone or profile correction",
+      "i am facing query regarding change of emaill phone or profile correction",
+      "i have an issue with query regarding change of date of birth emaill phone or profile correction",
+      "i have an issue with query regarding change of emaill phone or profile correction",
+      "need help regarding query regarding change of date of birth emaill phone or profile correction",
+      "need help regarding query regarding change of emaill phone or profile correction",
+      "problem related to query regarding change of date of birth emaill phone or profile correction",
+      "problem related to query regarding change of emaill phone or profile correction",
+      "query regarding change of date of birth emaill phone or profile correction",
+      "query regarding change of emaill phone or profile correction"
+    ],
+    "answer": "Contact students section or mail (along with proof) to goffice@mitsgwalior.in ,07512409325."
+  },
+  {
+    "intent": "intent_7",
+    "questions": [
+      "can you help with i forgot my password not able to login",
+      "can you help with query regarding moodle and ims password",
+      "how to i forgot my password not able to login",
+      "how to query regarding moodle and ims password",
+      "i am facing i forgot my password not able to login",
+      "i am facing query regarding moodle and ims password",
+      "i forgot my password not able to login",
+      "i have an issue with i forgot my password not able to login",
+      "i have an issue with query regarding moodle and ims password",
+      "need help regarding i forgot my password not able to login",
+      "need help regarding query regarding moodle and ims password",
+      "problem related to i forgot my password not able to login",
+      "problem related to query regarding moodle and ims password",
+      "query regarding moodle and ims password"
+    ],
+    "answer": "Open the concerning portal and use forgot password in both the portal."
+  },
+  {
+    "intent": "intent_8",
+    "questions": [
+      "can you help with i am not getting any emaill for ims registrations",
+      "can you help with when the ims registrations are started",
+      "how to i am not getting any emaill for ims registrations",
+      "how to when the ims registrations are started",
+      "i am facing i am not getting any emaill for ims registrations",
+      "i am facing when the ims registrations are started",
+      "i am not getting any emaill for ims registrations",
+      "i have an issue with i am not getting any emaill for ims registrations",
+      "i have an issue with when the ims registrations are started",
+      "need help regarding i am not getting any emaill for ims registrations",
+      "need help regarding when the ims registrations are started",
+      "problem related to i am not getting any emaill for ims registrations",
+      "problem related to when the ims registrations are started",
+      "when the ims registrations are started"
+    ],
+    "answer": "Right now IMS registration is not open. There will be a notification on the website, as the registrations start, keep visiting the university website for the same."
+  },
+  {
+    "intent": "intent_9",
+    "questions": [
+      "can you help with i am not getting any emaill for moodle or university emaill id",
+      "how to i am not getting any emaill for moodle or university emaill id",
+      "i am facing i am not getting any emaill for moodle or university emaill id",
+      "i am not getting any emaill for moodle or university emaill id",
+      "i have an issue with i am not getting any emaill for moodle or university emaill id",
+      "need help regarding i am not getting any emaill for moodle or university emaill id",
+      "problem related to i am not getting any emaill for moodle or university emaill id"
+    ],
+    "answer": "All the admitted students (except they college level counselling admitted) Moodle ID has been created by university please contact your class coordinator for Moodle ID /email ID and the default password is your phone number."
+  },
+  {
+    "intent": "intent_10",
+    "questions": [
+      "can you help with what is the moodle website address",
+      "how to what is the moodle website address",
+      "i am facing what is the moodle website address",
+      "i have an issue with what is the moodle website address",
+      "need help regarding what is the moodle website address",
+      "problem related to what is the moodle website address",
+      "what is the moodle website address"
+    ],
+    "answer": "In the University we have 2 Moodle servers http://moodle.mitsgwalior.in for before 2024 admitted students and https://moodle.mitseb.in for 2024 admitted students."
+  },
+  {
+    "intent": "intent_11",
+    "questions": [
+      "can you help with i dont know my emaill id or i am not getting any emaill for emaill id",
+      "how to i dont know my emaill id or i am not getting any emaill for emaill id",
+      "i am facing i dont know my emaill id or i am not getting any emaill for emaill id",
+      "i dont know my emaill id or i am not getting any emaill for emaill id",
+      "i have an issue with i dont know my emaill id or i am not getting any emaill for emaill id",
+      "need help regarding i dont know my emaill id or i am not getting any emaill for emaill id",
+      "problem related to i dont know my emaill id or i am not getting any emaill for emaill id"
+    ],
+    "answer": "All the newly admitted students Moodle ID has been created by university please contact your class coordinator for Moodle ID /email ID and the default password is your phone number."
+  },
+  {
+    "intent": "intent_12",
+    "questions": [
+      "can you help with how do i get my moodle id and password",
+      "how do i get my moodle id and password",
+      "how to how do i get my moodle id and password",
+      "i am facing how do i get my moodle id and password",
+      "i have an issue with how do i get my moodle id and password",
+      "need help regarding how do i get my moodle id and password",
+      "problem related to how do i get my moodle id and password"
+    ],
+    "answer": "If you've completed the college registration form during admission, you should receive an email from the university with your Moodle ID and password."
+  },
+  {
+    "intent": "intent_13",
+    "questions": [
+      "can you help with i havent filled out the college registration form what should i do",
+      "how to i havent filled out the college registration form what should i do",
+      "i am facing i havent filled out the college registration form what should i do",
+      "i have an issue with i havent filled out the college registration form what should i do",
+      "i havent filled out the college registration form what should i do",
+      "need help regarding i havent filled out the college registration form what should i do",
+      "problem related to i havent filled out the college registration form what should i do"
+    ],
+    "answer": "Please fill out the university registration form at this link: University Registration Form."
+  },
+  {
+    "intent": "intent_14",
+    "questions": [
+      "can you help with ive forgotten or lost my moodle id how can i retrieve it",
+      "how to ive forgotten or lost my moodle id how can i retrieve it",
+      "i am facing ive forgotten or lost my moodle id how can i retrieve it",
+      "i have an issue with ive forgotten or lost my moodle id how can i retrieve it",
+      "ive forgotten or lost my moodle id how can i retrieve it",
+      "need help regarding ive forgotten or lost my moodle id how can i retrieve it",
+      "problem related to ive forgotten or lost my moodle id how can i retrieve it"
+    ],
+    "answer": "Contact your class coordinator to get your Moodle ID, or check the provided link."
+  },
+  {
+    "intent": "intent_15",
+    "questions": [
+      "can you help with ive forgotten or lost my moodle password how do i reset it",
+      "how to ive forgotten or lost my moodle password how do i reset it",
+      "i am facing ive forgotten or lost my moodle password how do i reset it",
+      "i have an issue with ive forgotten or lost my moodle password how do i reset it",
+      "ive forgotten or lost my moodle password how do i reset it",
+      "need help regarding ive forgotten or lost my moodle password how do i reset it",
+      "problem related to ive forgotten or lost my moodle password how do i reset it"
+    ],
+    "answer": "Use the “Forgot Password” option on the Moodle login page. Enter your university email ID in the last field, then check your email for the password reset link."
+  },
+  {
+    "intent": "intent_16",
+    "questions": [
+      "can you help with i can login to moodle but my courses are not visible",
+      "how to i can login to moodle but my courses are not visible",
+      "i am facing i can login to moodle but my courses are not visible",
+      "i can login to moodle but my courses are not visible",
+      "i have an issue with i can login to moodle but my courses are not visible",
+      "need help regarding i can login to moodle but my courses are not visible",
+      "problem related to i can login to moodle but my courses are not visible"
+    ],
+    "answer": "Contact your course faculty to enroll you in their courses or reach out to your class coordinator."
+  },
+  {
+    "intent": "intent_17",
+    "questions": [
+      "can you help with how can i change my date of birth emaill phone number or make a profile correction",
+      "how can i change my date of birth emaill phone number or make a profile correction",
+      "how to how can i change my date of birth emaill phone number or make a profile correction",
+      "i am facing how can i change my date of birth emaill phone number or make a profile correction",
+      "i have an issue with how can i change my date of birth emaill phone number or make a profile correction",
+      "need help regarding how can i change my date of birth emaill phone number or make a profile correction",
+      "problem related to how can i change my date of birth emaill phone number or make a profile correction"
+    ],
+    "answer": "Contact the student section, or email goffice@mitsgwalior.in with proof for any profile corrections. You may also call 07512409325 for assistance."
+  }
+]
