@@ -45,24 +45,55 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch('http://127.0.0.1:5000/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text })
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get('content-type');
 
-      const botMsg = {
-        id: Date.now() + 1,
-        text: data.reply || "Sorry, I'm having trouble connecting.",
+      // --- HANDLE JSON (Rules/Greetings) ---
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        setMessages(prev => [...prev, {
+          id: Date.now() + 1,
+          text: data.reply,
+          sender: 'bot',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          type: data.type
+        }]);
+        setIsLoading(false);
+        return;
+      }
+
+      // --- HANDLE STREAMING (AI) ---
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let botText = "";
+      
+      const botMsgId = Date.now() + 1;
+      // Add empty message placeholder
+      setMessages(prev => [...prev, {
+        id: botMsgId,
+        text: "",
         sender: 'bot',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        type: data.type,
-        suggestions: data.suggestions || []
-      };
+        type: 'ollama'
+      }]);
 
-      setMessages(prev => [...prev, botMsg]);
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        botText += decoder.decode(value, { stream: true });
+        
+        // Update the last message text
+        setMessages(prev => prev.map(m => 
+          m.id === botMsgId ? { ...m, text: botText } : m
+        ));
+      }
+
     } catch (error) {
       console.error("Chat Error:", error);
       setMessages(prev => [...prev, {

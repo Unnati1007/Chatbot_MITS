@@ -6,7 +6,7 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import warnings
 warnings.filterwarnings('ignore')
 
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, Response
 from flask_cors import CORS
 
 import requests
@@ -69,8 +69,8 @@ def check_ollama_status():
         print(f"❌ Could not connect to Ollama server at http://127.0.0.1:11434. Make sure the Ollama app is open.")
     return False
 
-def call_ollama(user_query, context):
-    """Call local Ollama server for conversational response"""
+def call_ollama_stream(user_query, context):
+    """Call local Ollama server and yield chunks of text for real-time streaming"""
     system_prompt = (
         "You are the 'MITS AI Assistant', a premium university companion for Madhav Institute of Technology & Science. "
         "INSTRUCTIONS:\n"
@@ -90,22 +90,28 @@ def call_ollama(user_query, context):
             json={
                 "model": MODEL_NAME,
                 "prompt": full_prompt,
-                "stream": False,
+                "stream": True, # ENABLE STREAMING
                 "options": {
                     "temperature": 0.3,
                     "top_p": 0.9
                 }
             },
-            timeout=120
+            timeout=120,
+            stream=True
         )
+        
         if response.status_code == 200:
-            return response.json().get("response", "").strip()
+            for line in response.iter_lines():
+                if line:
+                    chunk = json.loads(line.decode('utf-8'))
+                    if "response" in chunk:
+                        yield chunk["response"]
+                    if chunk.get("done"):
+                        break
         else:
-            print(f"DEBUG: Ollama error {response.status_code}: {response.text}")
-            return None
+            yield f"Error: Ollama server returned {response.status_code}"
     except Exception as e:
-        print(f"DEBUG: Ollama connection failed: {e}")
-        return None
+        yield f"Error connecting to Ollama: {str(e)}"
 
 
 # =====================================================
@@ -113,66 +119,38 @@ def call_ollama(user_query, context):
 # =====================================================
 @app.route("/chat", methods=["POST"])
 def chat():
-    data = request.get_json()
-
+    data = request.json
     if not data or "message" not in data:
-        return jsonify({
-            "reply": "Invalid request",
-            "type": "error"
-        }), 400
+        return jsonify({"reply": "Invalid request"}), 400
 
     user_message = data["message"].strip()
-
     if not user_message:
+        return jsonify({"reply": "Please enter a message."})
+
+    memory = get_memory()
+    result = find_best_match(user_message, memory)
+    context = result.get("context", "General university help")
+
+    # If it's a rule-based response (like Hello/Bye), we send it directly
+    if result["type"] in ["greeting", "farewell", "direct"]:
         return jsonify({
-            "reply": "Please enter a message.",
-            "type": "error"
+            "reply": result["answer"],
+            "type": result["type"]
         })
 
-    # ---------- GET MEMORY ----------
-    memory = get_memory()
+    # For AI responses, we use the streaming generator
+    def generate():
+        full_reply = ""
+        for chunk in call_ollama_stream(user_message, context):
+            full_reply += chunk
+            yield chunk
+        
+        # Once streaming is done, update memory
+        new_memory = memory + [{"user": user_message, "bot": full_reply}]
+        if len(new_memory) > 10: new_memory.pop(0)
+        session["memory"] = new_memory
 
-    # ---------- MATCH ----------
-    result = find_best_match(user_message, memory)
-
-    response = {
-        "type": result["type"],
-        "confidence": result.get("confidence", 0.0),
-    }
-
-    # ---------- GENERATE CONVERSATIONAL RESPONSE ----------
-    context = result.get("context", "General university help")
-    
-    # Use Ollama for a conversational touch
-    ollama_reply = call_ollama(user_message, context)
-    
-    if ollama_reply:
-        response["reply"] = ollama_reply
-        response["type"] = "ollama"
-    elif result.get("answer"):
-        # FALLBACK: If Ollama fails, use the direct database answer
-        response["reply"] = result["answer"]
-        response["type"] = result["type"]
-    else:
-        # ABSOLUTE FALLBACK: No match and no Ollama
-        if result["type"] == "clarify":
-            response["reply"] = "I'm not quite sure, did you mean one of these?"
-            response["suggestions"] = result.get("suggestions", [])
-        else:
-            response["reply"] = (
-                "I'm sorry, I couldn't find a specific answer in my knowledge base. "
-                "Please try rephrasing your question or check the MITS website."
-            )
-
-    # ---------- UPDATE MEMORY ----------
-    update_memory({
-        "intent": result.get("intent", "unknown"),
-        "answer": response["reply"],
-        "confidence": result.get("confidence", 0.0),
-        "answer_id": result.get("answer_id", None),
-    })
-
-    return jsonify(response)
+    return Response(generate(), mimetype='text/plain')
 
 
 # =====================================================
