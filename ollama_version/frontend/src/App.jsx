@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot, User, RefreshCw, MessageSquare, Globe, BookOpen, GraduationCap, Mic, MicOff, Star, Info } from 'lucide-react';
+import { Send, Bot, User, RefreshCw, MessageSquare, Globe, BookOpen, GraduationCap, Mic, MicOff, Star, Info, Sun, Moon, Copy, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -24,6 +24,8 @@ function App() {
   const [adminData, setAdminData] = useState([]);
   const [adminStats, setAdminStats] = useState([]);
   const [adminTab, setAdminTab] = useState('feedback'); // 'feedback' or 'learning'
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+  const [copiedId, setCopiedId] = useState(null);
   const messagesEndRef = useRef(null);
 
   const formatDate = (dateStr) => {
@@ -40,6 +42,15 @@ function App() {
     window.addEventListener('popstate', handleLocationChange);
     return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
 
   const navigate = (path) => {
     window.history.pushState({}, '', path);
@@ -228,87 +239,53 @@ function App() {
     }
   };
 
+  const handleCopy = (text, id) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    });
+  };
+
   return (
-    <div className="app-wrapper">
-      {/* Sidebar Navigation */}
-      <aside className="sidebar">
-        <div className="logo-section">
-          <div className="bot-avatar" style={{ width: '32px', height: '32px' }}>
-            <Bot size={18} />
-          </div>
-          <h2>MITS AI</h2>
-        </div>
-
-        <nav className="nav-section">
-          <span className="nav-title">Quick Links</span>
-          <button 
-            onClick={() => navigate('/')} 
-            className={`nav-item ${view === 'chat' ? 'active' : ''}`}
-          >
-            <MessageSquare size={18} /> Chat
-          </button>
-          <button 
-            onClick={() => navigate('/admin')} 
-            className={`nav-item ${view === 'admin' ? 'active' : ''}`}
-          >
-            <Info size={18} /> Admin Dashboard
-          </button>
-          <a href="http://moodle.mitsgwalior.in/" target="_blank" className="nav-item">
-            <Globe size={18} /> Moodle (Old)
-          </a>
-          <a href="https://moodle.mitseb.in/" target="_blank" className="nav-item">
-            <Globe size={18} /> Moodle (2024+)
-          </a>
-          <a href="https://mitsims.in/" target="_blank" className="nav-item">
-            <MessageSquare size={18} /> IMS Portal
-          </a>
-          <a href="https://mitsgwalior.in/" target="_blank" className="nav-item">
-            <Globe size={18} /> MITS Website
-          </a>
-        </nav>
-
-        <nav className="nav-section">
-          <span className="nav-title">Resources</span>
-          <a href="#" className="nav-item">
-            <GraduationCap size={18} /> Registration Guide
-          </a>
-          <a href="#" className="nav-item">
-            <BookOpen size={18} /> Documentation
-          </a>
-        </nav>
-
-        <div className="status-card">
-          <div className="status-item">
-            <div className="status-dot online" />
-            <span>System Online</span>
-          </div>
-          <div className="status-item" style={{ marginTop: '8px', opacity: 0.7 }}>
-            <Bot size={14} />
-            <span>Llama 3.2 Active</span>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Chat Container */}
+    <div className="app-wrapper full-screen">
       {/* Main Container */}
       <div className="app-container">
         {view === 'chat' ? (
           <>
             <header className="app-header">
-              <div className="bot-avatar">
-                <Bot size={22} />
+              <div className="header-left">
+                <div className="bot-avatar">
+                  <Bot size={22} />
+                </div>
+                <div className="header-info">
+                  <h1>MITS AI Assistant</h1>
+                  <p>Secure Student Portal • Knowledge Base 2024</p>
+                </div>
               </div>
-              <div className="header-info">
-                <h1>MITS Assistant</h1>
-                <p>Powered by local LLM • Knowledge Base 2.0</p>
+              <div className="header-actions">
+                <button 
+                  onClick={() => navigate('/admin')} 
+                  className="action-btn admin-btn"
+                  title="Admin Dashboard"
+                >
+                  <Info size={18} />
+                  <span>Admin</span>
+                </button>
+                <button 
+                  onClick={toggleTheme}
+                  className="action-btn"
+                  title="Toggle Theme"
+                >
+                  {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                </button>
+                <button 
+                  onClick={handleReset}
+                  className="action-btn"
+                  title="Reset Chat"
+                >
+                  <RefreshCw size={18} />
+                </button>
               </div>
-              <button 
-                onClick={handleReset}
-                style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
-                title="Reset Chat"
-              >
-                <RefreshCw size={18} />
-              </button>
             </header>
 
             <main className="messages-area">
@@ -327,36 +304,52 @@ function App() {
                         </ReactMarkdown>
                       </div>
                       <div className="message-footer">
-                        <span className="message-time">{msg.time}</span>
-                        {msg.sender === 'bot' && msg.userQuery && (
-                      <div className="rating-area">
-                        {!msg.rated ? (
-                          <div className="rating-container">
-                            {[1, 2, 3, 4, 5].map(star => (
-                              <button 
-                                key={star} 
-                                onClick={() => handleFeedback(msg.id, star)}
-                                className="star-btn"
-                              >
-                                <Star size={12} />
-                              </button>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="submitted-rating">
-                            {[1, 2, 3, 4, 5].map(star => (
-                              <Star 
-                                key={star} 
-                                size={12} 
-                                fill={star <= msg.userRating ? "#fbbf24" : "transparent"} 
-                                color={star <= msg.userRating ? "#fbbf24" : "var(--text-muted)"} 
-                              />
-                            ))}
-                            <span className="thanks-text">Thanks!</span>
+                        <div className="footer-left">
+                          <span className="message-time">{msg.time}</span>
+                          {msg.sender === 'bot' && msg.text && (
+                            <button 
+                              className="copy-btn" 
+                              onClick={() => handleCopy(msg.text, msg.id)}
+                              title="Copy response"
+                            >
+                              {copiedId === msg.id ? <Check size={14} /> : <Copy size={14} />}
+                            </button>
+                          )}
+                        </div>
+                        {msg.sender === 'bot' && !msg.isLoading && msg.answerId !== undefined && msg.answerId !== null && (
+                          <div className="feedback-wrapper">
+                            {!msg.rated ? (
+                              <>
+                                {!msg.showRateLink ? (
+                                  <button 
+                                    className="rate-trigger"
+                                    onClick={() => setMessages(prev => prev.map(m => 
+                                      m.id === msg.id ? { ...m, showRateLink: true } : m
+                                    ))}
+                                  >
+                                    Rate this response
+                                  </button>
+                                ) : (
+                                  <div className="stars feedback-stars">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                      <Star 
+                                        key={star}
+                                        size={16}
+                                        className="star-icon"
+                                        onClick={() => handleFeedback(msg.id, star)}
+                                      />
+                                    ))}
+                                  </div>
+                                )}
+                              </>
+                            ) : (
+                              <div className="feedback-done">
+                                <Star size={12} fill="#fbbf24" color="#fbbf24" />
+                                <span>Thanks for your feedback!</span>
+                              </div>
+                            )}
                           </div>
                         )}
-                      </div>
-                    )}
                       </div>
                       
                       {msg.suggestions && msg.suggestions.length > 0 && (
@@ -379,15 +372,22 @@ function App() {
               
               {isLoading && (
                 <motion.div 
-                  initial={{ opacity: 0 }} 
-                  animate={{ opacity: 1 }}
+                  initial={{ opacity: 0, y: 5 }} 
+                  animate={{ opacity: 1, y: 0 }}
                   className="message-row bot"
+                  style={{ gap: '12px', alignItems: 'center' }}
                 >
-                  <div className="message-bubble" style={{ padding: '16px 24px' }}>
-                    <div className="typing">
-                      <span></span>
-                      <span></span>
-                      <span></span>
+                  <div className="bot-avatar" style={{ width: 32, height: 32, flexShrink: 0 }}>
+                    <Bot size={16} />
+                  </div>
+                  <div className="message-bubble thinking-bubble">
+                    <div className="thinking-content">
+                      <div className="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </div>
+                      <span className="thinking-text">MITS AI is thinking...</span>
                     </div>
                   </div>
                 </motion.div>
@@ -426,35 +426,55 @@ function App() {
         ) : (
           <div className="admin-view">
             <header className="app-header">
-              <div className="bot-avatar" style={{ background: 'var(--accent)' }}>
-                <Star size={22} />
+              <div className="header-left">
+                <div className="bot-avatar" style={{ background: 'var(--accent)' }}>
+                  <Star size={22} />
+                </div>
+                <div className="header-info">
+                  <h1>Feedback Analytics</h1>
+                  <p>Monitor student queries and bot performance</p>
+                </div>
               </div>
-              <div className="header-info">
-                <h1>Feedback Analytics</h1>
-                <p>Monitor student queries and bot performance</p>
-              </div>
-              <div className="admin-actions">
+
+              <div className="header-actions">
                 <button 
-                  className="refresh-btn-admin" 
-                  onClick={fetchAdminData}
-                  title="Refresh Data"
+                  onClick={() => navigate('/')}
+                  className="action-btn"
+                  title="Back to Chat"
                 >
-                  <RefreshCw size={18} />
-                </button>
-              </div>
-              <div className="admin-tabs">
-                <button 
-                  className={`tab-btn ${adminTab === 'feedback' ? 'active' : ''}`}
-                  onClick={() => setAdminTab('feedback')}
-                >
-                  Feedbacks
+                  <MessageSquare size={18} />
+                  <span>Chat</span>
                 </button>
                 <button 
-                  className={`tab-btn ${adminTab === 'learning' ? 'active' : ''}`}
-                  onClick={() => setAdminTab('learning')}
+                  onClick={toggleTheme}
+                  className="action-btn"
+                  title="Toggle Theme"
                 >
-                  AI Learning
+                  {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
                 </button>
+                <div className="admin-actions">
+                  <button 
+                    className="refresh-btn-admin" 
+                    onClick={fetchAdminData}
+                    title="Refresh Data"
+                  >
+                    <RefreshCw size={18} />
+                  </button>
+                </div>
+                <div className="admin-tabs">
+                  <button 
+                    className={`tab-btn ${adminTab === 'feedback' ? 'active' : ''}`}
+                    onClick={() => setAdminTab('feedback')}
+                  >
+                    Feedbacks
+                  </button>
+                  <button 
+                    className={`tab-btn ${adminTab === 'learning' ? 'active' : ''}`}
+                    onClick={() => setAdminTab('learning')}
+                  >
+                    AI Learning
+                  </button>
+                </div>
               </div>
             </header>
             
