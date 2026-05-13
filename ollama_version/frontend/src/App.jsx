@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot, User, RefreshCw, MessageSquare, Globe, BookOpen, GraduationCap } from 'lucide-react';
+import { Send, Bot, User, RefreshCw, MessageSquare, Globe, BookOpen, GraduationCap, Mic, MicOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -19,7 +19,36 @@ function App() {
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef(null);
+
+  // --- VOICE RECOGNITION LOGIC ---
+  const handleVoiceInput = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (!SpeechRecognition) {
+      alert("Your browser does not support voice recognition. Please try Chrome or Edge.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-IN'; // Optimized for Indian English
+    recognition.interimResults = false;
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
+    };
+
+    if (isListening) {
+      recognition.stop();
+    } else {
+      recognition.start();
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -134,15 +163,15 @@ function App() {
         </div>
 
         <nav className="nav-section">
-          <span className="nav-title">Navigation</span>
+          <span className="nav-title">Quick Links</span>
           <a href="#" className="nav-item active">
             <MessageSquare size={18} /> Chat
           </a>
           <a href="http://moodle.mitsgwalior.in/" target="_blank" className="nav-item">
-            <BookOpen size={18} /> Moodle (Old)
+            <Globe size={18} /> Moodle (Old)
           </a>
           <a href="https://moodle.mitseb.in/" target="_blank" className="nav-item">
-            <BookOpen size={18} /> Moodle (2024+)
+            <Globe size={18} /> Moodle (2024+)
           </a>
           <a href="https://mitsims.in/" target="_blank" className="nav-item">
             <MessageSquare size={18} /> IMS Portal
@@ -257,6 +286,14 @@ function App() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
+            <button 
+              type="button"
+              className={`voice-btn ${isListening ? 'active' : ''}`}
+              onClick={handleVoiceInput}
+              title={isListening ? "Stop listening" : "Voice input"}
+            >
+              {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+            </button>
             <button 
               type="submit" 
               className="send-btn"
