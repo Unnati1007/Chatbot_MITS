@@ -145,7 +145,13 @@ def chat():
             full_reply += chunk
             yield chunk
         
-        # Once streaming is done, update memory
+        # Once streaming is done, append suggestions using a separator
+        suggestions = result.get("suggestions", [])
+        if suggestions:
+            # We send ||| followed by a comma-separated list of suggestions
+            yield "|||" + "###".join(suggestions)
+        
+        # Update memory
         new_memory = memory + [{"user": user_message, "bot": full_reply}]
         if len(new_memory) > 10: new_memory.pop(0)
         session["memory"] = new_memory

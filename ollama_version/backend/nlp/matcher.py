@@ -142,8 +142,8 @@ def find_best_match(user_query: str, memory: list | None = None) -> dict:
         FAQ_EMBEDDINGS
     )[0]
 
-    # ---------- TOP-3 MATCHES ----------
-    top_indices = similarities.argsort()[::-1][:3]
+    # ---------- TOP-4 MATCHES ----------
+    top_indices = similarities.argsort()[::-1][:4]
 
     top_scores = similarities[top_indices]
     top_answers = [ANSWERS[i] for i in top_indices]
@@ -168,6 +168,9 @@ def find_best_match(user_query: str, memory: list | None = None) -> dict:
                 "context": top_answers[0]
             }
 
+    # Suggestions are the top questions excluding the first one
+    suggestions = top_questions[1:]
+
     # =================================================
     # DECISION LOGIC
     # =================================================
@@ -178,6 +181,8 @@ def find_best_match(user_query: str, memory: list | None = None) -> dict:
             "confidence": best_score,
             "intent": top_intents[0],
             "answer_id": best_index,
+            "suggestions": suggestions,
+            "context": top_answers[0]
         }
 
     if LOW_CONFIDENCE <= best_score < HIGH_CONFIDENCE:
@@ -187,7 +192,8 @@ def find_best_match(user_query: str, memory: list | None = None) -> dict:
             "confidence": best_score,
             "intent": None,
             "answer_id": None,
-            "suggestions": top_questions,
+            "suggestions": suggestions,
+            "context": top_answers[0]
         }
 
     return {
@@ -196,5 +202,6 @@ def find_best_match(user_query: str, memory: list | None = None) -> dict:
         "confidence": best_score,
         "intent": top_intents[0],
         "answer_id": best_index,
-        "context": top_answers[0]  # Even in fallback, we provide the best guess as context
+        "suggestions": suggestions,
+        "context": top_answers[0]
     }

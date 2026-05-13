@@ -115,12 +115,24 @@ function App() {
         const { done, value } = await reader.read();
         if (done) break;
         
-        botText += decoder.decode(value, { stream: true });
+        const chunk = decoder.decode(value, { stream: true });
         
-        // Update the last message text
-        setMessages(prev => prev.map(m => 
-          m.id === botMsgId ? { ...m, text: botText } : m
-        ));
+        // Check for suggestions separator
+        if (chunk.includes('|||')) {
+          const parts = chunk.split('|||');
+          botText += parts[0]; // Add text before separator
+          
+          const suggestions = parts[1].split('###').filter(s => s.trim());
+          
+          setMessages(prev => prev.map(m => 
+            m.id === botMsgId ? { ...m, text: botText, suggestions: suggestions } : m
+          ));
+        } else {
+          botText += chunk;
+          setMessages(prev => prev.map(m => 
+            m.id === botMsgId ? { ...m, text: botText } : m
+          ));
+        }
       }
 
     } catch (error) {
