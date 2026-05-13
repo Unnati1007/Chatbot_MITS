@@ -6,12 +6,11 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import warnings
 warnings.filterwarnings('ignore')
 
-from flask import Flask, request, jsonify, session, Response
+from flask import Flask, request, jsonify, session, Response, render_template_string
 from flask_cors import CORS
-
 import requests
 import json
-
+from database import save_feedback, get_all_feedback, get_rl_stats
 from nlp.matcher import find_best_match
 
 # =====================================================
@@ -138,24 +137,23 @@ def chat():
             "type": result["type"]
         })
 
-    # For AI responses, we use the streaming generator
-    def generate():
-        full_reply = ""
-        for chunk in call_ollama_stream(user_message, context):
-            full_reply += chunk
-            yield chunk
-        
-        # Once streaming is done, append suggestions using a separator
-        suggestions = result.get("suggestions", [])
-        if suggestions:
-            # We send ||| followed by a comma-separated list of suggestions
-            yield "|||" + "###".join(suggestions)
-        
-        # Update memory
-        new_memory = memory + [{"user": user_message, "bot": full_reply}]
-        if len(new_memory) > 10: new_memory.pop(0)
-        session["memory"] = new_memory
+    # Pre-calculate data to avoid request context issues inside generator
+    ans_id = result.get("answer_id")
+    suggestions = result.get("suggestions", [])
 
+    def generate():
+        # Using app.app_context() to ensure request context is available if needed
+        # though we pre-calculated IDs to be safe
+        with app.app_context():
+            full_reply = ""
+            for chunk in call_ollama_stream(user_message, context):
+                full_reply += chunk
+                yield chunk
+            
+            # Append ID and suggestions using separators
+            # Format: |||ANSWER_ID|||Sug1###Sug2
+            yield f"|||{ans_id}|||" + "###".join(suggestions)
+        
     return Response(generate(), mimetype='text/plain')
 
 
@@ -177,8 +175,42 @@ def health():
 
 
 # =====================================================
+# FEEDBACK ENDPOINT
+# =====================================================
+@app.route("/feedback", methods=["POST"])
+def feedback():
+    data = request.json
+    if not data:
+        return jsonify({"success": False, "message": "No data provided"}), 400
+    
+    query = data.get("query")
+    response = data.get("response")
+    rating = data.get("rating")
+    answer_id = data.get("answer_id")
+    remark = data.get("remark", "")
+    
+    if not query or not response or rating is None:
+        return jsonify({"success": False, "message": "Missing required fields"}), 400
+    
+    success = save_feedback(query, response, rating, answer_id, remark)
+    return jsonify({"success": success})
+
+# =====================================================
 # RUN SERVER
 # =====================================================
+# =====================================================
+# ADMIN API
+# =====================================================
+@app.route("/api/admin/feedback", methods=["GET"])
+def admin_feedback():
+    feedbacks = get_all_feedback()
+    return jsonify(feedbacks)
+
+@app.route("/api/admin/stats", methods=["GET"])
+def admin_stats():
+    stats = get_rl_stats()
+    return jsonify(stats)
+
 if __name__ == "__main__":
     # use_reloader=False prevents double-loading of the AI model
     print("🚀 MITS AI Backend is starting...")

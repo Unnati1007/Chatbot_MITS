@@ -76,7 +76,8 @@ def check_rules(user_query: str) -> dict | None:
             "type": "rule",
             "intent": "greeting",
             "answer": "Hello! 👋 How can I help you with Moodle, IMS, or registration?",
-            "confidence": 1.0
+            "confidence": 1.0,
+            "answer_id": -1
         }
 
     # ---------- THANK YOU ----------
@@ -85,7 +86,8 @@ def check_rules(user_query: str) -> dict | None:
             "type": "rule",
             "intent": "thanks",
             "answer": "Glad to help! 😊 Let me know if you have more questions.",
-            "confidence": 1.0
+            "confidence": 1.0,
+            "answer_id": -2
         }
 
     # ---------- CONFIRMATION / FILLER ----------
@@ -94,7 +96,8 @@ def check_rules(user_query: str) -> dict | None:
             "type": "rule",
             "intent": "confirmation",
             "answer": "Okay 👍 Tell me what you need help with.",
-            "confidence": 1.0
+            "confidence": 1.0,
+            "answer_id": -3
         }
 
     # ---------- FAREWELLS ----------
@@ -103,7 +106,8 @@ def check_rules(user_query: str) -> dict | None:
             "type": "rule",
             "intent": "farewell",
             "answer": "Goodbye! 😊 Feel free to ask if you have more questions about Moodle or IMS later. Have a great day!",
-            "confidence": 1.0
+            "confidence": 1.0,
+            "answer_id": -4
         }
 
     # ---------- PASSWORD ISSUES ----------
@@ -116,7 +120,8 @@ def check_rules(user_query: str) -> dict | None:
                 "on the Moodle or IMS login page. Enter your university email ID "
                 "and follow the instructions sent to your email."
             ),
-            "confidence": 0.95
+            "confidence": 0.95,
+            "answer_id": -5
         }
 
     # ---------- REGISTRATION ISSUES ----------
@@ -129,7 +134,8 @@ def check_rules(user_query: str) -> dict | None:
                 "website for notifications. Once registrations start, you will receive "
                 "official updates."
             ),
-            "confidence": 0.90
+            "confidence": 0.90,
+            "answer_id": -6
         }
 
     return None
