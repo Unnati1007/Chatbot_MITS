@@ -50,7 +50,24 @@ def clear_memory():
 # OLLAMA HELPERS
 # =====================================================
 OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
-MODEL_NAME = "llama3"
+MODEL_NAME = "llama3.2"
+
+def check_ollama_status():
+    """Verify if Ollama is running and Llama 3.2 is available"""
+    try:
+        response = requests.get("http://127.0.0.1:11434/api/tags", timeout=3)
+        if response.status_code == 200:
+            models = [m["name"] for m in response.json().get("models", [])]
+            if any("llama3.2" in m.lower() for m in models):
+                print(f"✅ Ollama is Online. Found models: {', '.join(models)}")
+                return True
+            else:
+                print(f"⚠️ Ollama is running but '{MODEL_NAME}' was not found. Please run 'ollama pull llama3.2'.")
+        else:
+            print(f"❌ Ollama server responded with status: {response.status_code}")
+    except Exception as e:
+        print(f"❌ Could not connect to Ollama server at http://127.0.0.1:11434. Make sure the Ollama app is open.")
+    return False
 
 def call_ollama(user_query, context):
     """Call local Ollama server for conversational response"""
@@ -61,7 +78,8 @@ def call_ollama(user_query, context):
         "2. Format your response using Markdown (bolding, lists, etc.) to make it highly readable.\n"
         "3. **CRITICAL:** Only provide URLs that are explicitly mentioned in the provided Context. DO NOT invent or assume any website addresses.\n"
         "4. If the context is about a technical issue (Moodle, IMS), provide step-by-step instructions.\n"
-        "5. If the context is irrelevant, answer based on general knowledge but maintain a professional university tone."
+        "5. **STRICT POLICY:** If the user's question is completely unrelated to university life, academics, or MITS (e.g., cooking, movies, sports), "
+        "politely inform them that you are specifically designed to assist with MITS-related queries and cannot provide general life advice or recipes."
     )
     
     full_prompt = f"System: {system_prompt}\n\nContext: {context}\n\nUser: {user_query}\n\nAssistant:"
@@ -74,18 +92,19 @@ def call_ollama(user_query, context):
                 "prompt": full_prompt,
                 "stream": False,
                 "options": {
-                    "temperature": 0.3, # Keep it focused
+                    "temperature": 0.3,
                     "top_p": 0.9
                 }
             },
-            timeout=15
+            timeout=120
         )
         if response.status_code == 200:
             return response.json().get("response", "").strip()
         else:
+            print(f"DEBUG: Ollama error {response.status_code}: {response.text}")
             return None
     except Exception as e:
-        print(f"Ollama Connection Error: {e}")
+        print(f"DEBUG: Ollama connection failed: {e}")
         return None
 
 
@@ -177,4 +196,10 @@ def health():
 # RUN SERVER
 # =====================================================
 if __name__ == "__main__":
-    app.run(debug=True)
+    # use_reloader=False prevents double-loading of the AI model
+    print("🚀 MITS AI Backend is starting...")
+    
+    # Check if local Ollama is ready
+    check_ollama_status()
+    
+    app.run(debug=True, use_reloader=False, port=5000)

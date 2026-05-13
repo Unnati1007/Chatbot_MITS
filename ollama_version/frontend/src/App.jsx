@@ -133,12 +133,12 @@ function App() {
 
         <div className="status-card">
           <div className="status-item">
-            <div className="dot"></div>
+            <div className="status-dot online" />
             <span>System Online</span>
           </div>
           <div className="status-item" style={{ marginTop: '8px', opacity: 0.7 }}>
             <Bot size={14} />
-            <span>Ollama (Llama 3) Active</span>
+            <span>Llama 3.2 Active</span>
           </div>
         </div>
       </aside>
